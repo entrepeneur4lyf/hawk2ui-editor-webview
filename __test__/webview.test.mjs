@@ -22,6 +22,7 @@ const supportedNativePackageDirs = [
   'win32-arm64-msvc',
   'win32-x64-msvc',
 ];
+const rootPackageName = '@hawk2ui/editor-webview';
 
 test('Rust crate version matches the root package version', () => {
   const cargoToml = readFileSync(join(rootDir, 'Cargo.toml'), 'utf8');
@@ -50,6 +51,35 @@ test('local native package versions match the root package version', () => {
       packageJson.version,
       `${nativePackage.directory} should use version ${packageJson.version}`,
     );
+  }
+});
+
+test('package metadata uses the Hawk2UI editor webview package family', () => {
+  assert.equal(packageJson.name, rootPackageName);
+  assert.equal(packageJson.repository, 'https://github.com/entrepeneur4lyf/hawk2ui-editor-webview');
+
+  const npmDir = join(rootDir, 'npm');
+  for (const directory of supportedNativePackageDirs) {
+    const manifest = JSON.parse(readFileSync(join(npmDir, directory, 'package.json'), 'utf8'));
+
+    assert.equal(manifest.name, `${rootPackageName}-${directory}`);
+    assert.equal(manifest.repository, packageJson.repository);
+  }
+});
+
+test('package metadata does not use the upstream WebviewJS npm scope', () => {
+  for (const relativePath of [
+    'package.json',
+    'index.js',
+    'README.md',
+    ...supportedNativePackageDirs.flatMap((directory) => [
+      join('npm', directory, 'README.md'),
+      join('npm', directory, 'package.json'),
+    ]),
+  ]) {
+    const contents = readFileSync(join(rootDir, relativePath), 'utf8');
+
+    assert.equal(contents.includes('@webviewjs'), false, `${relativePath} should not reference @webviewjs`);
   }
 });
 
@@ -172,9 +202,11 @@ test(
   'Linux x64 native binding loads when native smoke testing is enabled',
   {
     skip:
-      process.env.WEBVIEWJS_NATIVE_SMOKE === '1' && process.platform === 'linux' && process.arch === 'x64'
+      process.env.HAWK2UI_EDITOR_WEBVIEW_NATIVE_SMOKE === '1' &&
+      process.platform === 'linux' &&
+      process.arch === 'x64'
         ? false
-        : 'Set WEBVIEWJS_NATIVE_SMOKE=1 on Linux x64 after building the native binding.',
+        : 'Set HAWK2UI_EDITOR_WEBVIEW_NATIVE_SMOKE=1 on Linux x64 after building the native binding.',
   },
   async () => {
     const webview = await import('../index.js');

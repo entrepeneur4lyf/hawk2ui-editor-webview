@@ -1,14 +1,14 @@
 {
-  "name": "@webviewjs/webview",
+  "name": "@hawk2ui/editor-webview",
   "version": "0.1.4",
   "bin": {
-    "webview": "./cli/index.mjs",
-    "webviewjs": "./cli/index.mjs"
+    "hawk2ui-editor-webview": "./cli/index.mjs",
+    "webview": "./cli/index.mjs"
   },
   "description": "Native webview sidecar package for Hawk2UI editor desktop dogfooding.",
   "main": "./index.js",
   "types": "./index.d.ts",
-  "repository": "git@github.com:webviewjs/webview.git",
+  "repository": "https://github.com/entrepeneur4lyf/hawk2ui-editor-webview",
   "license": "MIT",
   "type": "commonjs",
   "keywords": [

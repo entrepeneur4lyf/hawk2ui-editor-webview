@@ -23,7 +23,7 @@ const options = {
     name: {
         type: 'string',
         short: 'n',
-        default: 'webviewjs',
+        default: 'hawk2ui-editor-webview',
         description: 'Project name',
     },
     output: {
@@ -98,7 +98,7 @@ ${Object.entries(options).map(([name, { short, default: defaultValue, type }]) =
     if (isDry) {
         logger(`Dry run: building ${input} to ${output}`);
     } else {
-        const projectName = args.values.name || 'webviewjs';
+        const projectName = args.values.name || 'hawk2ui-editor-webview';
         const target = build(input, output, prettify(projectName), resources);
         logger(styleText('greenBright', `\nBuilt ${input} to ${target}. You can now run the executable using ${styleText(['cyanBright', 'bold'], target)}`));
     }

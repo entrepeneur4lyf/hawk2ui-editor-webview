@@ -1,3 +1,3 @@
-# `@webviewjs/webview-win32-x64-msvc`
+# `@hawk2ui/editor-webview-win32-x64-msvc`
 
-This is the **x86_64-pc-windows-msvc** binary for `@webviewjs/webview`
+This is the **x86_64-pc-windows-msvc** binary for `@hawk2ui/editor-webview`

@@ -1,5 +1,5 @@
 {
-  "name": "@webviewjs/webview-win32-arm64-msvc",
+  "name": "@hawk2ui/editor-webview-win32-arm64-msvc",
   "version": "0.1.4",
   "os": [
     "win32"
@@ -27,5 +27,5 @@
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
-  "repository": "git@github.com:webviewjs/webview.git"
+  "repository": "https://github.com/entrepeneur4lyf/hawk2ui-editor-webview"
 }

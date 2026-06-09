@@ -1,5 +1,5 @@
 {
-  "name": "@webviewjs/webview-linux-x64-gnu",
+  "name": "@hawk2ui/editor-webview-linux-x64-gnu",
   "version": "0.1.4",
   "os": [
     "linux"
@@ -27,7 +27,7 @@
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
-  "repository": "git@github.com:webviewjs/webview.git",
+  "repository": "https://github.com/entrepeneur4lyf/hawk2ui-editor-webview",
   "libc": [
     "glibc"
   ]

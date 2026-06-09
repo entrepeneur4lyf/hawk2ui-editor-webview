@@ -1,5 +1,5 @@
 {
-  "name": "@webviewjs/webview-darwin-arm64",
+  "name": "@hawk2ui/editor-webview-darwin-arm64",
   "version": "0.1.4",
   "os": [
     "darwin"
@@ -27,5 +27,5 @@
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
-  "repository": "git@github.com:webviewjs/webview.git"
+  "repository": "https://github.com/entrepeneur4lyf/hawk2ui-editor-webview"
 }

@@ -4,7 +4,7 @@ This repository is a WebviewJS fork used to prove a native webview sidecar for
 the `hawk2ui-editor` example app.
 
 It is not a Hawk2UI framework dependency. Keep this fork scoped to making
-`import('@webviewjs/webview')` work for editor dogfooding on the 64-bit desktop
+`import('@hawk2ui/editor-webview')` work for editor dogfooding on the 64-bit desktop
 targets we expect to support.
 
 ## Current Status
@@ -14,19 +14,19 @@ Verified locally:
 - Linux x64 GNU native binding builds.
 - The root package can import the native binding from `webview.linux-x64-gnu.node`.
 - A local tarball can be installed into a clean consumer project and imported as
-  `@webviewjs/webview`.
+  `@hawk2ui/editor-webview`.
 - The native package metadata, root package version, and Rust crate version are
   aligned at `0.1.4`.
 
 Not claimed:
 
-- Published npm availability for `@webviewjs/webview-linux-x64-gnu@0.1.4`.
+- Published npm availability for `@hawk2ui/editor-webview-linux-x64-gnu@0.1.4`.
 - Production readiness.
 - Android, FreeBSD, 32-bit Windows, 32-bit Linux, or Linux armv7 support.
 - Built artifacts for every target in the desktop matrix.
 
-The package name remains `@webviewjs/webview` so the editor can test the same
-import shape it would use with an upstream package.
+The package name is `@hawk2ui/editor-webview`, matching the published
+`@hawk2ui/*` package family used by the framework packages.
 
 ## Target Matrix
 
@@ -112,7 +112,7 @@ bun run test
 Native import smoke test:
 
 ```bash
-WEBVIEWJS_NATIVE_SMOKE=1 bun run test
+HAWK2UI_EDITOR_WEBVIEW_NATIVE_SMOKE=1 bun run test
 ```
 
 Other checks:
@@ -137,7 +137,7 @@ mkdir -p /tmp/hawk2ui-webview-consumer
 cd /tmp/hawk2ui-webview-consumer
 bun init -y
 bun add /tmp/hawk2ui-webview-linux-x64.tgz
-bun -e "const webview = require('@webviewjs/webview'); console.log(typeof webview.Webview, typeof webview.getWebviewVersion)"
+bun -e "const webview = require('@hawk2ui/editor-webview'); console.log(typeof webview.Webview, typeof webview.getWebviewVersion)"
 ```
 
 Expected output:
