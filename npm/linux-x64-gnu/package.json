@@ -1,6 +1,6 @@
 {
   "name": "@webviewjs/webview-linux-x64-gnu",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "os": [
     "linux"
   ],
@@ -11,12 +11,12 @@
   "files": [
     "webview.linux-x64-gnu.node"
   ],
-  "description": "Robust cross-platform webview library for Node.js written in Rust",
+  "description": "Native webview sidecar package for Hawk2UI editor desktop dogfooding.",
   "keywords": [
     "webview",
     "node",
     "rust",
-    "cross-platform",
+    "hawk2ui",
     "gui"
   ],
   "license": "MIT",

@@ -188,7 +188,7 @@ const window = app.createBrowserWindow({
 });
 
 // Create webview with example content
-const webview = window.createWebview({
+window.createWebview({
   html: `<!DOCTYPE html>
   <html>
     <head>

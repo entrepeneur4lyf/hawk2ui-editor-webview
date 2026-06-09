@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process';
 import { copyFileSync, constants, writeFileSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
-import { dirname, join, sep } from 'node:path';
+import { dirname, join } from 'node:path';
 import { execPath } from 'node:process'
 
 const isWindows = process.platform === 'win32';

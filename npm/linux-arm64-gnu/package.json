@@ -1,15 +1,15 @@
 {
-  "name": "@webviewjs/webview-darwin-x64",
+  "name": "@webviewjs/webview-linux-arm64-gnu",
   "version": "0.1.4",
   "os": [
-    "darwin"
+    "linux"
   ],
   "cpu": [
-    "x64"
+    "arm64"
   ],
-  "main": "webview.darwin-x64.node",
+  "main": "webview.linux-arm64-gnu.node",
   "files": [
-    "webview.darwin-x64.node"
+    "webview.linux-arm64-gnu.node"
   ],
   "description": "Native webview sidecar package for Hawk2UI editor desktop dogfooding.",
   "keywords": [
@@ -27,5 +27,8 @@
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
-  "repository": "git@github.com:webviewjs/webview.git"
+  "repository": "git@github.com:webviewjs/webview.git",
+  "libc": [
+    "glibc"
+  ]
 }

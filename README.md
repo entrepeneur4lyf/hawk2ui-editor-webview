@@ -1,292 +1,186 @@
-# `@webviewjs/webview`
+# Hawk2UI Editor Webview Sidecar
 
-![https://github.com/webviewjs/webview/actions](https://github.com/webviewjs/webview/workflows/CI/badge.svg)
+This repository is a WebviewJS fork used to prove a native webview sidecar for
+the `hawk2ui-editor` example app.
 
-Robust cross-platform webview library for Node.js written in Rust. It is a native binding to [tao](https://github.com/tauri-apps/tao) and [wry](https://github.com/tauri-apps/wry) allowing you to easily manage cross platform windowing and webview.
+It is not a Hawk2UI framework dependency. Keep this fork scoped to making
+`import('@webviewjs/webview')` work for editor dogfooding on the 64-bit desktop
+targets we expect to support.
 
-![preview](https://github.com/webviewjs/webview/raw/main/assets/preview.png)
+## Current Status
 
-> [!CAUTION]
-> This library is still in development and not ready for production use. Feel free to experiment with it and report any issues you find.
+Verified locally:
 
-# Installation
+- Linux x64 GNU native binding builds.
+- The root package can import the native binding from `webview.linux-x64-gnu.node`.
+- A local tarball can be installed into a clean consumer project and imported as
+  `@webviewjs/webview`.
+- The native package metadata, root package version, and Rust crate version are
+  aligned at `0.1.4`.
 
-```bash
-npm install @webviewjs/webview
-```
+Not claimed:
 
-# Supported platforms
+- Published npm availability for `@webviewjs/webview-linux-x64-gnu@0.1.4`.
+- Production readiness.
+- Android, FreeBSD, 32-bit Windows, 32-bit Linux, or Linux armv7 support.
+- Built artifacts for every target in the desktop matrix.
 
-| Platform                     | Supported |
-| ---------------------------- | --------- |
-| x86_64-pc-windows-msvc       | ✅        |
-| i686-pc-windows-msvc         | ✅        |
-| aarch64-pc-windows-msvc      | ✅        |
-| x86_64-apple-darwin          | ✅        |
-| aarch64-apple-darwin         | ✅        |
-| x86_64-unknown-linux-gnu     | ✅        |
-| i686-unknown-linux-gnu       | ✅        |
-| aarch64-unknown-linux-gnu    | ✅        |
-| armv7-unknown-linux-gnueabihf| ✅        |
-| aarch64-linux-android        | ✅        |
-| armv7-linux-androideabi      | ✅        |
-| x86_64-unknown-freebsd       | ✅        |
+The package name remains `@webviewjs/webview` so the editor can test the same
+import shape it would use with an upstream package.
 
-# Examples
+## Target Matrix
 
-## Load external url
+| Target | Status | Notes |
+| --- | --- | --- |
+| `x86_64-pc-windows-msvc` | Planned | 64-bit Windows on Intel/AMD. |
+| `aarch64-pc-windows-msvc` | Planned | 64-bit Windows on ARM. |
+| `x86_64-apple-darwin` | Planned | 64-bit macOS on Intel. |
+| `aarch64-apple-darwin` | Planned | 64-bit macOS on Apple Silicon. |
+| `x86_64-unknown-linux-gnu` | Verified locally | 64-bit Linux on Intel/AMD, built and smoke-tested locally. |
+| `aarch64-unknown-linux-gnu` | Planned | 64-bit Linux on ARM. |
 
-```js
-import { Application } from '@webviewjs/webview';
-// or
-const { Application } = require('@webviewjs/webview');
+The `package.json` NAPI targets, CI build matrix, and `npm/` native package dirs
+are intentionally limited to this matrix.
 
-const app = new Application();
-const window = app.createBrowserWindow();
-const webview = window.createWebview();
+## System Dependencies
 
-webview.loadUrl('https://nodejs.org');
-
-app.run();
-```
-
-## Menu System
-
-WebviewJS provides a cross-platform menu system that works on macOS, Windows, and Linux.
-
-### Basic Menu Setup
-
-```js
-import { Application, initMenuSystem } from '@webviewjs/webview';
-
-// Initialize menu system (recommended, especially for macOS)
-initMenuSystem();
-
-const app = new Application();
-
-// Set global application menu
-app.setMenu({
-  items: [
-    {
-      label: "File",
-      submenu: {
-        items: [
-          { id: "new", label: "New", accelerator: "CmdOrCtrl+N" },
-          { id: "open", label: "Open", accelerator: "CmdOrCtrl+O" },
-          { role: "separator" },
-          { id: "quit", label: "Quit", accelerator: "CmdOrCtrl+Q" }
-        ]
-      }
-    },
-    {
-      label: "Edit",
-      submenu: {
-        items: [
-          { role: "copy" },
-          { role: "paste" },
-          { role: "cut" },
-          { role: "selectall" }
-        ]
-      }
-    }
-  ]
-});
-
-const window = app.createBrowserWindow();
-const webview = window.createWebview({ url: 'https://nodejs.org' });
-
-app.run();
-```
-
-### Menu Event Handling
-
-```js
-import { Application, WebviewApplicationEvent } from '@webviewjs/webview';
-
-const app = new Application();
-
-// Handle menu events
-app.bind((event) => {
-  if (event.event === WebviewApplicationEvent.CustomMenuClick) {
-    const menuEvent = event.customMenuEvent;
-    console.log(`Menu item clicked: ${menuEvent.id}`);
-    console.log(`From window: ${menuEvent.windowId}`);
-    
-    // Handle specific menu items
-    switch (menuEvent.id) {
-      case 'new':
-        console.log('Creating new document...');
-        break;
-      case 'open':
-        console.log('Opening file...');
-        break;
-      case 'quit':
-        app.exit();
-        break;
-    }
-  }
-});
-
-// Set up menu...
-app.setMenu({ /* ... */ });
-```
-
-### Window-Specific Menus
-
-```js
-const app = new Application();
-
-// Create window with custom menu
-const window = app.createBrowserWindow({
-  title: "Custom Window",
-  menu: {
-    items: [
-      {
-        id: "window-action",
-        label: "Window Action",
-        accelerator: "Ctrl+W"
-      }
-    ]
-  }
-});
-
-// Or check if window has a menu
-if (window.hasMenu()) {
-  console.log('This window has a menu');
-}
-```
-
-### Menu Item Options
-
-- **`id`**: Unique identifier for the menu item (used in events)
-- **`label`**: Display text for the menu item
-- **`enabled`**: Whether the item is clickable (default: true)
-- **`accelerator`**: Keyboard shortcut (e.g., "CmdOrCtrl+N", "Alt+F4")
-- **`submenu`**: Nested menu items
-- **`role`**: Predefined menu items with built-in behavior
-
-### Predefined Menu Roles
-
-- **`"copy"`**: Standard copy action
-- **`"paste"`**: Standard paste action  
-- **`"cut"`**: Standard cut action
-- **`"selectall"`**: Select all text action
-- **`"separator"`**: Visual separator line
-
-## IPC
-
-```js
-const app = new Application();
-const window = app.createBrowserWindow();
-
-const webview = window.createWebview({
-    html: `<!DOCTYPE html>
-    <html>
-        <head>
-            <title>Webview</title>
-        </head>
-        <body>
-            <h1 id="output">Hello world!</h1>
-            <button id="btn">Click me!</button>
-            <script>
-                btn.onclick = function send() {
-                    window.ipc.postMessage('Hello from webview');
-                }
-            </script>
-        </body>
-    </html>
-    `,
-    preload: `window.onIpcMessage = function(data) {
-        const output = document.getElementById('output');
-        output.innerText = \`Server Sent A Message: \${data}\`;
-    }`
-});
-
-if (!webview.isDevtoolsOpen()) webview.openDevtools();
-
-webview.onIpcMessage((data) => {
-    const reply = `You sent ${data.body.toString('utf-8')}`;
-    window.evaluateScript(`onIpcMessage("${reply}")`)
-})
-
-app.run();
-```
-
-## Closing the Application
-
-You can close the application, windows, and webviews gracefully to ensure all resources (including temporary folders) are cleaned up properly.
-
-```js
-const app = new Application();
-const window = app.createBrowserWindow();
-const webview = window.createWebview({ url: 'https://nodejs.org' });
-
-// Set up event handler for close events
-// You can use either onEvent() or bind() - they are equivalent
-app.bind((event) => {
-  if (event.event === WebviewApplicationEvent.ApplicationCloseRequested) {
-    console.log('Application is closing, cleaning up resources...');
-    // Perform cleanup here: save data, close connections, etc.
-  }
-  
-  if (event.event === WebviewApplicationEvent.WindowCloseRequested) {
-    console.log('Window close requested');
-    // Perform window-specific cleanup
-  }
-});
-
-// Close the application gracefully (cleans up temp folders)
-app.exit();
-
-// Or hide/show the window
-window.hide(); // Hide the window
-window.show(); // Show the window again
-
-// Or reload the webview
-webview.reload();
-```
-
-For more details on closing applications and cleaning up resources, see the [Closing Guide](./docs/CLOSING_GUIDE.md).
-
-Check out [examples](./examples) directory for more examples:
-
-- **[menu-system.mjs](./examples/menu-system.mjs)** - Comprehensive menu system demonstration with all features
-- **[window-menus.mjs](./examples/window-menus.mjs)** - Window-specific vs global menu examples  
-- **[http/](./examples/http/)** - Serving content from a web server to webview
-- **[transparent.mjs](./examples/transparent.mjs)** - Transparent window example
-- **[close-example.mjs](./examples/close-example.mjs)** - Graceful application closing
-
-Run any example with: `node examples/menu-system.mjs` (after building the project)
-
-# Building executables
-
-> [!WARNING]
-> The CLI feature is very experimental and may not work as expected. Please report any issues you find.
-
-You can use [Single Executable Applications](https://nodejs.org/api/single-executable-applications.html) feature of Node.js to build an executable file. WebviewJS comes with a helper cli script to make this process easier.
+On Ubuntu/Debian Linux x64:
 
 ```bash
-webview --build --input ./path/to/your/script.js --output ./path/to/output-directory --name my-app
+bun run setup
 ```
 
-You can pass `--resources ./my-resource.json` to include additional resources in the executable. This resource can be imported using `getAsset()` or `getRawAsset()` functions from `node:sea` module.
+The setup script installs only the direct build dependencies:
 
-# Development
+```bash
+pkg-config
+libwebkit2gtk-4.1-dev
+libxdo-dev
+```
 
-## Prerequisites
+`libwebkit2gtk-4.1-dev` pulls the GTK, JavaScriptCoreGTK, libsoup, cairo, pango,
+atk, and GDK pixbuf development packages needed by the Rust GTK/WebKit crates.
 
-- [Bun](https://bun.sh/) >= 1.3.0
-- [Rust](https://www.rust-lang.org/) stable toolchain
-- [Node.js](https://nodejs.org/) >= 24 (for testing)
+If `cargo check` reports missing `*.pc` files, verify the development metadata:
 
-## Setup
+```bash
+pkg-config --modversion webkit2gtk-4.1 javascriptcoregtk-4.1 gtk+-3.0 libsoup-3.0
+```
+
+Having WebKit runtime packages installed is not enough; `pkg-config` needs the
+`-dev` packages.
+
+## Build
+
+Install dependencies:
 
 ```bash
 bun install
 ```
 
-## Build
+Build the Linux x64 native binding locally:
 
 ```bash
-bun run build
+bun run build --target x86_64-unknown-linux-gnu
 ```
+
+This produces:
+
+```text
+webview.linux-x64-gnu.node
+```
+
+Other targets are expected to be built in CI or on matching host hardware.
+
+For local package layout, copy the built binary into `npm/linux-x64-gnu/`:
+
+```bash
+bunx napi artifacts --output-dir . --npm-dir ./npm
+```
+
+`bun run artifacts` is the CI publish-style command and expects downloaded
+artifacts under `./artifacts`; use the explicit command above for local builds.
+
+## Test
+
+Default tests:
+
+```bash
+bun run test
+```
+
+Native import smoke test:
+
+```bash
+WEBVIEWJS_NATIVE_SMOKE=1 bun run test
+```
+
+Other checks:
+
+```bash
+bun run check
+bun run lint
+```
+
+## Local Editor Dependency
+
+Create a local tarball after building:
+
+```bash
+bun pm pack --filename /tmp/hawk2ui-webview-linux-x64.tgz
+```
+
+Verify from a clean consumer:
+
+```bash
+mkdir -p /tmp/hawk2ui-webview-consumer
+cd /tmp/hawk2ui-webview-consumer
+bun init -y
+bun add /tmp/hawk2ui-webview-linux-x64.tgz
+bun -e "const webview = require('@webviewjs/webview'); console.log(typeof webview.Webview, typeof webview.getWebviewVersion)"
+```
+
+Expected output:
+
+```text
+function function
+```
+
+The editor side should remain feature-gated while this is a local sidecar test:
+
+```bash
+HAWK2UI_EDITOR_WEBVIEW_SIDECAR=1
+```
+
+## Runtime Smoke
+
+Minimal local import check from this checkout:
+
+```bash
+bun -e "const webview = require('./index.js'); console.log(typeof webview.Webview, webview.getWebviewVersion())"
+```
+
+`getWebviewVersion()` returns the installed WebKitGTK runtime version, not the
+npm package version.
+
+## Repository Hygiene
+
+- Do not treat this fork as the Hawk2UI framework.
+- Keep editor-only integration state out of this repository.
+- Do not claim broad platform support unless the target is built, packaged, and
+  smoke-tested.
+- Keep `package.json` NAPI targets, CI build targets, and `npm/` package dirs in
+  sync with the 64-bit desktop matrix.
+- Do not publish this fork until every advertised target has a produced artifact
+  or the publish flow is scoped to the verified target.
+
+## Upstream
+
+This fork is based on WebviewJS:
+
+```text
+https://github.com/webviewjs/webview
+```
+
+Use upstream docs for general API exploration, but verify behavior against this
+fork before relying on it for the editor sidecar.

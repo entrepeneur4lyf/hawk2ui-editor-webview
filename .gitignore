@@ -149,7 +149,6 @@ Cargo.lock
 
 # NAPI
 index.d.ts
-npm/
 
 # IDE
 .idea/

@@ -1,6 +1,6 @@
 {
   "name": "@webviewjs/webview-win32-x64-msvc",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "os": [
     "win32"
   ],
@@ -11,12 +11,12 @@
   "files": [
     "webview.win32-x64-msvc.node"
   ],
-  "description": "Robust cross-platform webview library for Node.js written in Rust",
+  "description": "Native webview sidecar package for Hawk2UI editor desktop dogfooding.",
   "keywords": [
     "webview",
     "node",
     "rust",
-    "cross-platform",
+    "hawk2ui",
     "gui"
   ],
   "license": "MIT",

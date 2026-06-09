@@ -9,7 +9,7 @@ const browserWindow = app.createBrowserWindow({
   height: 600,
 });
 
-const webview = browserWindow.createWebview({
+browserWindow.createWebview({
   html: `
     <!DOCTYPE html>
     <html>
