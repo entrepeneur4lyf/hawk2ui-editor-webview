@@ -108,6 +108,30 @@ test('CI workflow supports manual dispatch without a separate lint workflow', ()
   assert.equal(existsSync(join(workflowDir, 'lint.yml')), false);
 });
 
+test('CI uses Node 24-compatible official GitHub actions', () => {
+  const ciWorkflow = readFileSync(join(rootDir, '.github', 'workflows', 'CI.yml'), 'utf8');
+
+  for (const action of [
+    'actions/checkout@v6.0.3',
+    'actions/setup-node@v6.4.0',
+    'actions/cache@v5.0.5',
+    'actions/upload-artifact@v7.0.1',
+    'actions/download-artifact@v8.0.1',
+  ]) {
+    assert.equal(ciWorkflow.includes(`uses: ${action}`), true, `${action} should be pinned in CI`);
+  }
+
+  for (const action of [
+    'actions/checkout@v4',
+    'actions/setup-node@v4',
+    'actions/cache@v4',
+    'actions/upload-artifact@v4',
+    'actions/download-artifact@v4',
+  ]) {
+    assert.equal(ciWorkflow.includes(`uses: ${action}`), false, `${action} should not be used in CI`);
+  }
+});
+
 test('CI build matrix is limited to the 64-bit desktop sidecar targets', () => {
   const ciWorkflow = readFileSync(join(rootDir, '.github', 'workflows', 'CI.yml'), 'utf8');
 
