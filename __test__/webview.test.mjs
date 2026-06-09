@@ -116,7 +116,6 @@ test('CI uses Node 24-compatible official GitHub actions', () => {
     'actions/setup-node@v6.4.0',
     'actions/cache@v5.0.5',
     'actions/upload-artifact@v7.0.1',
-    'actions/download-artifact@v8.0.1',
   ]) {
     assert.equal(ciWorkflow.includes(`uses: ${action}`), true, `${action} should be pinned in CI`);
   }
@@ -129,6 +128,24 @@ test('CI uses Node 24-compatible official GitHub actions', () => {
     'actions/download-artifact@v4',
   ]) {
     assert.equal(ciWorkflow.includes(`uses: ${action}`), false, `${action} should not be used in CI`);
+  }
+});
+
+test('CI does not publish npm packages', () => {
+  const ciWorkflow = readFileSync(join(rootDir, '.github', 'workflows', 'CI.yml'), 'utf8');
+
+  for (const publishMarker of [
+    'publish:',
+    'Publish to npm',
+    'npm publish',
+    'NODE_AUTH_TOKEN',
+    'NPM_TOKEN',
+    'registry-url:',
+    'npm config set provenance',
+    'id-token: write',
+    'actions/download-artifact',
+  ]) {
+    assert.equal(ciWorkflow.includes(publishMarker), false, `${publishMarker} should not be in CI`);
   }
 });
 
