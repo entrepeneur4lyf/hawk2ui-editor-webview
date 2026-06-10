@@ -17,27 +17,43 @@ Verified locally:
   `@hawk2ui/editor-webview`.
 - The native package metadata, root package version, and Rust crate version are
   aligned at `0.1.4`.
+- CI builds artifacts for the six 64-bit desktop targets in the matrix.
+- The root package and native packages are published to npm at `0.1.4`.
 
 Not claimed:
 
-- Published npm availability for `@hawk2ui/editor-webview-linux-x64-gnu@0.1.4`.
 - Production readiness.
 - Android, FreeBSD, 32-bit Windows, 32-bit Linux, or Linux armv7 support.
-- Built artifacts for every target in the desktop matrix.
+- Runtime smoke coverage on every published OS/architecture pair.
 
 The package name is `@hawk2ui/editor-webview`, matching the published
 `@hawk2ui/*` package family used by the framework packages.
+
+## Published Packages
+
+Published npm packages at `0.1.4`:
+
+- `@hawk2ui/editor-webview`
+- `@hawk2ui/editor-webview-darwin-arm64`
+- `@hawk2ui/editor-webview-darwin-x64`
+- `@hawk2ui/editor-webview-linux-arm64-gnu`
+- `@hawk2ui/editor-webview-linux-x64-gnu`
+- `@hawk2ui/editor-webview-win32-arm64-msvc`
+- `@hawk2ui/editor-webview-win32-x64-msvc`
+
+CI is build-only. npm releases are published manually after CI is green and
+require npm MFA at publish time.
 
 ## Target Matrix
 
 | Target | Status | Notes |
 | --- | --- | --- |
-| `x86_64-pc-windows-msvc` | Planned | 64-bit Windows on Intel/AMD. |
-| `aarch64-pc-windows-msvc` | Planned | 64-bit Windows on ARM. |
-| `x86_64-apple-darwin` | Planned | 64-bit macOS on Intel. |
-| `aarch64-apple-darwin` | Planned | 64-bit macOS on Apple Silicon. |
-| `x86_64-unknown-linux-gnu` | Verified locally | 64-bit Linux on Intel/AMD, built and smoke-tested locally. |
-| `aarch64-unknown-linux-gnu` | Planned | 64-bit Linux on ARM. |
+| `x86_64-pc-windows-msvc` | Published | 64-bit Windows on Intel/AMD, published as `@hawk2ui/editor-webview-win32-x64-msvc`. |
+| `aarch64-pc-windows-msvc` | Published | 64-bit Windows on ARM, published as `@hawk2ui/editor-webview-win32-arm64-msvc`. |
+| `x86_64-apple-darwin` | Published | 64-bit macOS on Intel, published as `@hawk2ui/editor-webview-darwin-x64`. |
+| `aarch64-apple-darwin` | Published | 64-bit macOS on Apple Silicon, published as `@hawk2ui/editor-webview-darwin-arm64`. |
+| `x86_64-unknown-linux-gnu` | Published and smoke-tested locally | 64-bit Linux on Intel/AMD, published as `@hawk2ui/editor-webview-linux-x64-gnu`. |
+| `aarch64-unknown-linux-gnu` | Published | 64-bit Linux on ARM, published as `@hawk2ui/editor-webview-linux-arm64-gnu`. |
 
 The `package.json` NAPI targets, CI build matrix, and `npm/` native package dirs
 are intentionally limited to this matrix.
@@ -98,8 +114,8 @@ For local package layout, copy the built binary into `npm/linux-x64-gnu/`:
 bunx napi artifacts --output-dir . --npm-dir ./npm
 ```
 
-`bun run artifacts` is the CI publish-style command and expects downloaded
-artifacts under `./artifacts`; use the explicit command above for local builds.
+`bun run artifacts` is the artifact assembly command for downloaded CI artifacts
+under `./artifacts`; use the explicit command above for local builds.
 
 ## Test
 
@@ -122,9 +138,19 @@ bun run check
 bun run lint
 ```
 
-## Local Editor Dependency
+## Editor Dependency
 
-Create a local tarball after building:
+Install the published package:
+
+```bash
+bun add @hawk2ui/editor-webview
+```
+
+The package includes the native packages as optional dependencies. npm, Bun, and
+other package managers should install the matching platform package for the host
+when optional dependencies are enabled.
+
+For local dogfooding, create a tarball after building:
 
 ```bash
 bun pm pack --filename /tmp/hawk2ui-webview-linux-x64.tgz
@@ -171,8 +197,8 @@ npm package version.
   smoke-tested.
 - Keep `package.json` NAPI targets, CI build targets, and `npm/` package dirs in
   sync with the 64-bit desktop matrix.
-- Do not publish this fork until every advertised target has a produced artifact
-  or the publish flow is scoped to the verified target.
+- Keep CI build-only. Publish npm releases manually with MFA after confirming
+  CI artifacts and package contents.
 
 ## Upstream
 
