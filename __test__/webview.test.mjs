@@ -56,15 +56,26 @@ test('local native package versions match the root package version', () => {
 
 test('package metadata uses the Hawk2UI editor webview package family', () => {
   assert.equal(packageJson.name, rootPackageName);
-  assert.equal(packageJson.repository, 'https://github.com/entrepeneur4lyf/hawk2ui-editor-webview');
+  assert.deepEqual(packageJson.repository, {
+    type: 'git',
+    url: 'git+https://github.com/entrepeneur4lyf/hawk2ui-editor-webview.git',
+  });
 
   const npmDir = join(rootDir, 'npm');
   for (const directory of supportedNativePackageDirs) {
     const manifest = JSON.parse(readFileSync(join(npmDir, directory, 'package.json'), 'utf8'));
 
     assert.equal(manifest.name, `${rootPackageName}-${directory}`);
-    assert.equal(manifest.repository, packageJson.repository);
+    assert.deepEqual(manifest.repository, packageJson.repository);
   }
+});
+
+test('root package declares the native packages as optional dependencies', () => {
+  const expectedOptionalDependencies = Object.fromEntries(
+    supportedNativePackageDirs.map((directory) => [`${rootPackageName}-${directory}`, packageJson.version]),
+  );
+
+  assert.deepEqual(packageJson.optionalDependencies, expectedOptionalDependencies);
 });
 
 test('package metadata does not use the upstream WebviewJS npm scope', () => {
